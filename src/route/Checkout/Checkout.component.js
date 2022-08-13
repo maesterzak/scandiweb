@@ -351,10 +351,11 @@ export class Checkout extends PureComponent {
 
     render() {
         const { checkoutStep } = this.props;
-        const stepsCount = Object.keys(this.stepMap).length
+        
+        
         return (
             <main block="Checkout">
-                <ProgressBar checkoutStep = {checkoutStep} stepsCount = {stepsCount}/>
+                <ProgressBar checkoutStep = {checkoutStep} stepMap = {this.stepMap}/>
                 <ContentWrapper
                   wrapperMix={ { block: 'Checkout', elem: 'Wrapper' } }
                   label={ __('Checkout page') }

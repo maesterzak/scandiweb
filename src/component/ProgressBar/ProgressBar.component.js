@@ -1,6 +1,6 @@
 import { createRef, PureComponent } from 'react';
 import style from './ProgressBar.module.css'
-import { BILLING_STEP, SHIPPING_STEP } from 'Route/Checkout/Checkout.config';
+
 
 export class ProgressBar extends PureComponent {
     state = {
@@ -8,18 +8,20 @@ export class ProgressBar extends PureComponent {
     }
 
     componentDidMount(){
-        const { stepsCount } = this.props;
+        const { stepMap } = this.props;
+        const stepsCount = Object.keys(stepMap).length
+        
         var steps = 100/stepsCount 
         const interval = setInterval(() => {
-            var bb = this.state.value
-            const cv = bb + 1
-            this.setState({ value: cv});
-            if(cv >= steps){
+            var currentValue = this.state.value
+            const newValue = currentValue + 1
+            this.setState({ value: newValue});
+            if(newValue >= steps){
                 
                 clearInterval(interval)
                 
             }
-            return cv
+            return newValue
 
             
             
@@ -28,65 +30,47 @@ export class ProgressBar extends PureComponent {
     
     
     componentDidUpdate(prevProps){
-        const { checkoutStep, stepsCount } = this.props;
+        const { checkoutStep } = this.props;
         const { checkoutStep: prevCheckoutStep } = prevProps;
         var steps = this.state.value * 2
         
         if (checkoutStep !== prevCheckoutStep) {
         
             const interval = setInterval(() => {
-                var bb = this.state.value
-                const cv = bb + 1
-                this.setState({ value: cv});
-                if(cv >= steps){
+                var currentValue = this.state.value
+                const newValue = currentValue + 1
+                this.setState({ value: newValue});
+                if(newValue >= steps){
                     
                     clearInterval(interval)
                     
                 }
-                return cv
+                return newValue
             }, 30);}     
     
     }
     render(){
         
-        const { stepsCount, checkoutStep } = this.props;
+        const { stepMap } = this.props;
+        const stepsCount = Object.keys(stepMap).length
         var steps = 100/stepsCount
         
         return(
             <>
             <div className={style.container}>
                 <progress max={100} value={this.state.value}/>
-                {/* {checkoutStep.map(function(item, index){
-                    return(
-                        <div style={{"left":`${steps}%`}} className={style.firstCheck}>
+                {Array.from({ length: stepsCount-1 }, (_, i) =>
+                 <div style={{"left":`${steps * (i+1)}%`}} className={style.check}>
+                    <div>
                         <div>
-                            <div>
-                                1
-                            </div>
-                        
+                            {i+1}
                         </div>
-                        <span>Shipping</span>
-                    </div>
-                    )
-                })} */}
-                <div style={{"left":`${steps}%`}} className={style.firstCheck}>
-                        <div>
-                            <div>
-                                1
-                            </div>
-                        
-                        </div>
-                        <span>Shipping</span>
-                    </div>
-                    <div style={{"left":`${steps * 2}%`}} className={style.secondCheck}>
-                        <div>
-                            <div>
-                                2
-                            </div>
-                        </div>
-                        <span>Review & Payments</span>
-                    </div>
                     
+                    </div>
+                 <span>{Object.keys(stepMap)[i]}</span>
+                </div>
+                 )
+                 }    
             </div>
             </>
         )
